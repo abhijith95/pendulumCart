@@ -41,12 +41,13 @@ class pendulumCart:
         dydt = [x1dot,x2dot,x3dot,x4dot]
         return dydt
     
-    def systemUpdate(self,currentTime,f):
+    def systemSolver(self,currentTime,systemInput):
         y0 = [self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity]
         solution = solve_ivp(fun = self.systemEquation,
                              t_span =[currentTime,currentTime+self.timeStep],t_eval = [currentTime+self.timeStep],
-                             y0=y0,args=[f])
+                             y0=y0,args=[systemInput])
         self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity = solution.y
+        
 
 # pcSystem = pendulumCart(cartMass=10,pendulumMass=1,
 #                         pendulumLength=0.5,damping=1,springStiffness=10,
