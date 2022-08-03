@@ -5,18 +5,18 @@ import math
 from pendulumCart import pendulumCart
 from Controllers import pidController
 
-class render(pyglet.window.Window):
+class render(pyglet.window.Window,pendulumCart):
     
     def __init__(self,*args,**kwargs):
         
         pyglet.window.Window.__init__(self,*args,**kwargs)
-        # pendulumCart.__init__(self,cartMass=5, pendulumMass=1,pendulumLength=0.5,
-        #                        damping = 0.1, springStiffness=2,timeStep=1,
-        #                        initialStateVector=[0,0,math.pi,0])
-        # pidController.__init(self,kp = 10,ki = 0, kd = 1)
+        pendulumCart.__init__(self,cartMass=5, pendulumMass=1,pendulumLength=0.5,
+                               damping = 0.1, springStiffness=2,timeStep=1,
+                               initialStateVector=[0,0,math.pi,0])
+        # pidController.__init(self,kp = 10,ki = 0, kd = 1, dt = 1)
         
         self.scale = 5
-        self.currentPos = np.array([100,100,90]) # the SW corner of the cart and angular position of the pendulum
+        self.currentPos = np.array([100,100,20]) # the SW corner of the cart and angular position of the pendulum
         self.cartWidth, self.cartHeight = 80,50
         self.pendulumLength, self.pendulumWidth = 70,10
         self.pivotRadius, self.wheelRadius = 2 , 8
@@ -26,6 +26,7 @@ class render(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         # drawing cart
+        R = self.pendulumWidth/math.sqrt(2)
         cartCenter = [self.currentPos[0] + (0.5*self.cartWidth),
                       self.currentPos[1] + (0.5*self.cartHeight)]
         cart = pyglet.shapes.Rectangle(x = self.currentPos[0], y = self.currentPos[1],
@@ -33,12 +34,14 @@ class render(pyglet.window.Window):
                                        color = (0,255,0))
         
         # drawing the pendulum
-        pendulum = pyglet.shapes.Rectangle(x = cartCenter[0] - (0.5*self.pendulumWidth),
-                                           y = cartCenter[1] - (0.5*self.pendulumWidth),
+        """
+        Since the pendulum swings, the SW corner point of the pendulum changes with the rotation.
+        THis is what is depicted in the coordinates below.
+        """
+        pendulum = pyglet.shapes.Rectangle(x = cartCenter[0] - (R*math.sin(math.radians(45+self.currentPos[2]))),
+                                           y = cartCenter[1] - (R*math.cos(math.radians(45+self.currentPos[2]))),
                                            width = self.pendulumWidth, height= self.pendulumLength,
                                            color = (200,0,0))
-        # pendulum.anchor_x,pendulum.anchor_y = cartCenter[0]-pendulum.x,cartCenter[1]-pendulum.y
-        # pendulum.anchor_x,pendulum.anchor_y = 5,5
         pendulum.rotation=self.currentPos[2]
         
         # drawing the pivot pin
