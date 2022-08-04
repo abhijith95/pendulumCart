@@ -46,7 +46,7 @@ class pendulumCart:
         solution = solve_ivp(fun = self.systemEquation,
                              t_span =[currentTime,currentTime+self.timeStep],t_eval = [currentTime+self.timeStep],
                              y0=y0,args=[systemInput])
-        self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity = solution.y
+        self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity = float(solution.y[0]),float(solution.y[1]),float(solution.y[2]),float(solution.y[3])
         
 
 # pcSystem = pendulumCart(cartMass=10,pendulumMass=1,
