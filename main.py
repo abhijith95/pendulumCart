@@ -6,7 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 pcAgent = agent(5)
-nGames = 600
+nGames = 500
 env = pendulumCart()
 scoreHistory = []
 
@@ -20,14 +20,14 @@ for i in range(nGames):
         state = env.getState()
         action = pcAgent.takeAction(state)
         # solve the ODE to move the system to next state
-        action = float(action)*env.maxForce
+        # action = float(action)*env.maxForce
         env.systemSolver(simulationTime,action)
         simulationTime+=1
         newState = env.getState()
         reward = env.getReward(action)
         score+=reward
         done = env.isDone()
-        done = done or (simulationTime > 5000)
+        done = done or (simulationTime > 2500)
         pcAgent.remember(state,action,reward,newState,done)
         pcAgent.learn()
         
@@ -74,5 +74,5 @@ def testModel():
     axs[2].plot(time,force)
     plt.show()
 
-testModel()
+# testModel()
 print("Done")

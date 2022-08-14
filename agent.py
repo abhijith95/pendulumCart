@@ -1,7 +1,7 @@
 import numpy as np
 from pendulumCart import pendulumCart
 import tensorflow as tf
-import tensorflow.keras as keras
+import tensorflow.python.keras as keras
 from tensorflow.keras.optimizers import Adam
 from memoryBuffer import memoryBuffer
 from networks import criticNetwork, actorNetwork
@@ -20,7 +20,8 @@ class agent:
     """
     def __init__(self,inputDims,alpha = 0.001,beta = 0.002,
                  gamma = 0.99,nactions = 1, maxMemorySize = 10**6,
-                 tau = 0.005,fc1 = 128, fc2 = 200,batchSize = 128, noise = 0.1):
+                 tau = 0.005,fc1 = 128, fc2 = 200,batchSize = 128, noise = 0.1,
+                 actionBound = 20):
         """_summary_
 
         Args:
@@ -42,6 +43,7 @@ class agent:
         self.nactions = nactions
         self.noise = noise
         self.env = pendulumCart()
+        self.actionBound = actionBound
         
         self.actor = actorNetwork(nactions,r'C:\Users\abhij\pendulumCart\NN_weights')
         self.critic = criticNetwork(r'C:\Users\abhij\pendulumCart\NN_weights')
@@ -92,11 +94,11 @@ class agent:
     
     def takeAction(self,state,evaluate = False):
         state = tf.convert_to_tensor([state], dtype=tf.float32)
-        actions = self.actor(state)
-        # if not evaluate:
-        #     actions += tf.random.normal(shape=[self.nactions],
-        #                                 mean=0.0, stddev=self.noise)
-        # actions = tf.clip_by_value(actions, -1, 1)
+        actions = tf.multiply(self.actionBound,self.actor(state))
+        if not evaluate:
+            actions += tf.random.normal(shape=[self.nactions],
+                                        mean=0.0, stddev=self.noise)
+        actions = tf.clip_by_value(actions, -self.actionBound, self.actionBound)
         return actions[0]
     
     def learn(self):
@@ -112,7 +114,7 @@ class agent:
         actions = tf.convert_to_tensor(action, dtype=tf.float32)
         
         with tf.GradientTape() as tape:
-            target_actions = self.targetActor(states_)
+            target_actions = tf.multiply(self.actionBound,self.targetActor(states_))
             critic_value_ = tf.squeeze(self.targetCritic(
                                 states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
@@ -125,7 +127,7 @@ class agent:
             critic_network_gradient, self.critic.trainable_variables))
         
         with tf.GradientTape() as tape:
-            new_policy_actions = self.actor(states)
+            new_policy_actions = tf.multiply(self.actionBound,self.actor(states))
             actor_loss = -self.critic(states, new_policy_actions)
             actor_loss = tf.math.reduce_mean(actor_loss)
 

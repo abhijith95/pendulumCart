@@ -1,10 +1,10 @@
 import os
 import tensorflow as tf
-import tensorflow.python.keras as keras
-from tensorflow.python.keras.layers import Dense
+import tensorflow.keras as keras
+from tensorflow.keras.layers import Dense
 
 class criticNetwork(keras.Model):
-    def __init__(self,nactions,directory,fc1dims = 512,
+    def __init__(self,directory,fc1dims = 512,
                  fc2dims = 512,name = 'critic'):
         super(criticNetwork,self).__init__()
         self.fc1dims = fc1dims
@@ -61,6 +61,6 @@ class actorNetwork(keras.Model):
         Returns:
             tensorflow tensor: action predicted by the NN 
         """
-        action = self.mu(self.fc2(self.fc1(state)))
+        action = tf.multiply(20,self.mu(self.fc2(self.fc1(state))))
         return action
     

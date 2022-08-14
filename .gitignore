@@ -5,3 +5,7 @@ NN_weights/actor.h5
 NN_weights/critic.h5
 NN_weights/target-actor.h5
 NN_weights/target-critic.h5
+__pycache__/agent.cpython-38.pyc
+__pycache__/memoryBuffer.cpython-310.pyc
+__pycache__/networks.cpython-310.pyc
+__pycache__/pendulumCart.cpython-38.pyc

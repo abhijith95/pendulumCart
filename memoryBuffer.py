@@ -12,8 +12,8 @@ class memoryBuffer:
     def __init__(self,maxSize,stateShape,nactions):
         self.memorySize = maxSize
         self.memoryCtr = 0 # to keep track of how many entries are filled in the buffer
-        self.stateMemory = np.zeros((maxSize*stateShape))
-        self.newStateMemory = np.zeros((maxSize*stateShape))
+        self.stateMemory = np.zeros((maxSize,stateShape))
+        self.newStateMemory = np.zeros((maxSize,stateShape))
         self.actionMemory = np.zeros((maxSize,nactions))
         self.rewardMemory = np.zeros((maxSize))
         self.terminalMemory = np.zeros(maxSize,dtype=np.bool)
@@ -25,7 +25,7 @@ class memoryBuffer:
         self.newStateMemory[index] = newState
         self.rewardMemory[index] = reward
         self.actionMemory[index] = action
-        self.terminalMemory[index] = done
+        self.terminalMemory[index] = 1-done
         self.memoryCtr+=1
         
     def sampleBuffer(self,batchSize):
