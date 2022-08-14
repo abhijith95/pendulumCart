@@ -1,3 +1,6 @@
 [submodule "Controllers"]
 	path = Controllers
 	url = https://github.com/abhijith95/Controllers.git
+[submodule "ActorCritic"]
+	path = ActorCritic
+	url = https://github.com/abhijith95/ActorCritic.git

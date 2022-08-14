@@ -1,1 +1,7 @@
 __pycache__/pendulumCart.cpython-310.pyc
+__pycache__/agent.cpython-310.pyc
+ActorCritic
+NN_weights/actor.h5
+NN_weights/critic.h5
+NN_weights/target-actor.h5
+NN_weights/target-critic.h5
