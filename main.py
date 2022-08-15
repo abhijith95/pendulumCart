@@ -6,7 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 pcAgent = agent(5)
-nGames = 500
+nGames = 400
 env = pendulumCart()
 scoreHistory = []
 

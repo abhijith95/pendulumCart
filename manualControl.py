@@ -4,7 +4,7 @@ from pendulumCart import pendulumCart
 from Controllers.pidController import pidController
 import matplotlib.pyplot as plt
 
-DT = 1
+DT = 1/1000
 
 class manualControl(pendulumCart,pidController):
     """
@@ -13,10 +13,10 @@ class manualControl(pendulumCart,pidController):
     top and make sure it stays there.
     """
     def __init__(self):
-        pendulumCart.__init__(self,cartMass=5, pendulumMass=1,pendulumLength=0.5,
-                               damping = 10, springStiffness=10,timeStep=DT,
-                               initialStateVector=[0,0,math.pi,0])
-        pidController.__init__(self,kp = -5,ki = 0.0, kd = 0.0, dt = DT)
+        pendulumCart.__init__(self,cartMass=0.5, pendulumMass=0.2,pendulumLength=0.3,
+                               damping = 0.1, springStiffness=0,timeStep=DT,
+                               initialStateVector=[0,0,5*math.pi/180,0])
+        pidController.__init__(self,kp = 10,ki = 0.10, kd = 1, dt = DT)
         self.currentTime = 0
         self.targetPosition = 0
         
@@ -43,11 +43,13 @@ class manualControl(pendulumCart,pidController):
     
     def runSystem(self):
         time,pendulumAngle,cartPos,force = [0],[180],[0],[0]
-        while self.currentTime < 500:
+        while self.currentTime < 3:
             f = self.systemUpdate()
             temp = math.degrees(self.pendulumPosition)
             if temp < 0:
                 temp+=360
+            if 359 < temp < 361:
+                temp = 0
             time.append(self.currentTime)
             pendulumAngle.append(temp)
             cartPos.append(self.cartPosition)
