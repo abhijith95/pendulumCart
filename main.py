@@ -6,7 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 pcAgent = agent(5)
-nGames = 400
+nGames = 700
 env = pendulumCart()
 scoreHistory = []
 
@@ -27,7 +27,7 @@ for i in range(nGames):
         reward = env.getReward(action)
         score+=reward
         done = env.isDone()
-        done = done or (simulationTime > 2500)
+        done = done or (simulationTime > 2.5)
         pcAgent.remember(state,action,reward,newState,done)
         pcAgent.learn()
         
@@ -52,13 +52,13 @@ def testModel():
     simulationTime = 0
     envTest = pendulumCart(initialStateVector=[0,0,math.pi,0])
     time,pendulumAngle,cartPos,force = [0],[180],[0],[0]
-    while simulationTime < 2500:
+    while simulationTime < 2.5:
         state = envTest.getState()
         state = tf.convert_to_tensor([state], dtype=tf.float32)
         action = bestModel(state)
-        cartForce = float(action)*envTest.maxForce
+        cartForce = float(action[0])*envTest.maxForce
         envTest.systemSolver(simulationTime,action)
-        simulationTime+=1
+        simulationTime+=(1/1000)
         temp = math.degrees(envTest.pendulumPosition)
         if temp < 0:
             temp+=360
@@ -74,5 +74,5 @@ def testModel():
     axs[2].plot(time,force)
     plt.show()
 
-# testModel()
+testModel()
 print("Done")

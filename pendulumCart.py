@@ -13,7 +13,7 @@ class pendulumCart:
     will be the update in the new position and velocity.
     """
     def __init__(self,cartMass=1, pendulumMass=1,pendulumLength=0.1,
-                               damping = 0.1, springStiffness=0,timeStep=1,
+                               damping = 0.1, springStiffness=0,timeStep=1/1000,
                                initialStateVector=[0,0,5*math.pi/180,0],
                  maxTrackLength = 1,maxForce = 20):
         """
@@ -47,7 +47,8 @@ class pendulumCart:
     def reset(self):
         self.cartPosition = random.uniform(0,self.maxTrackLength)
         self.cartVelocity,self.pendulumVelocity = 0.0, 0.0
-        self.pendulumPosition = random.uniform(0,2*math.pi)
+        temp = random.uniform(0,360)
+        self.pendulumPosition = math.radians(temp)
     
     def systemEquation(self,t,y,f):
         """
@@ -87,8 +88,8 @@ class pendulumCart:
         This function returns reward for the current state of the system
         The parameters are taken from the paper: https://www.mdpi.com/2076-3417/10/24/9013
         """    
-        ar,br,cr,dr,er,n = (10**-2),(0.1),(5),(-0.01),(-100),2
-        r1 = dr*(br*(abs(self.pendulumPosition)**n)+cr*(abs(systemInput)**n))
+        ar,br,cr,dr,er,n = (10**-2),(0.1),(1),(-0.01),(-100),2
+        r1 = dr*(br*(abs(self.pendulumPosition*180/math.pi)**n)+cr*(abs(systemInput)**n))
         if abs(self.cartPosition) < self.maxTrackLength:
             reward = r1
         else:

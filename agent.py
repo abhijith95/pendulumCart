@@ -94,7 +94,7 @@ class agent:
     
     def takeAction(self,state,evaluate = False):
         state = tf.convert_to_tensor([state], dtype=tf.float32)
-        actions = tf.multiply(self.actionBound,self.actor(state))
+        actions = self.actor(state)
         if not evaluate:
             actions += tf.random.normal(shape=[self.nactions],
                                         mean=0.0, stddev=self.noise)
@@ -114,7 +114,7 @@ class agent:
         actions = tf.convert_to_tensor(action, dtype=tf.float32)
         
         with tf.GradientTape() as tape:
-            target_actions = tf.multiply(self.actionBound,self.targetActor(states_))
+            target_actions = self.targetActor(states_)
             critic_value_ = tf.squeeze(self.targetCritic(
                                 states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
@@ -127,7 +127,7 @@ class agent:
             critic_network_gradient, self.critic.trainable_variables))
         
         with tf.GradientTape() as tape:
-            new_policy_actions = tf.multiply(self.actionBound,self.actor(states))
+            new_policy_actions = self.actor(states)
             actor_loss = -self.critic(states, new_policy_actions)
             actor_loss = tf.math.reduce_mean(actor_loss)
 

@@ -37,7 +37,7 @@ class criticNetwork(keras.Model):
 
 class actorNetwork(keras.Model):
     def __init__(self,nactions,directory,fc1dims = 512,
-                 fc2dims = 512,name = 'actor'):
+                 fc2dims = 512,name = 'actor',actionBounds = 20):
         super(actorNetwork,self).__init__()
         self.fc1dims = fc1dims
         self.fc2dims = fc2dims
@@ -45,6 +45,7 @@ class actorNetwork(keras.Model):
         self.directory = directory
         # the NN is saved as .h5 file to be used later
         self.chkptFile = os.path.join(self.directory,self.modelName+'.h5')
+        self.bound = actionBounds
         
         # creating the neural network note that all the layers are separate 
         # and not connected to each other
@@ -61,6 +62,6 @@ class actorNetwork(keras.Model):
         Returns:
             tensorflow tensor: action predicted by the NN 
         """
-        action = tf.multiply(20,self.mu(self.fc2(self.fc1(state))))
+        action = self.mu(self.fc2(self.fc1(state))) * self.bound
         return action
     
