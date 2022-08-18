@@ -118,7 +118,7 @@ class agent:
             critic_value_ = tf.squeeze(self.targetCritic(
                                 states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            target = rewards + self.gamma*critic_value_*(1-done)
+            target = rewards + self.gamma*critic_value_*(done)
             critic_loss = keras.losses.MSE(target, critic_value)
 
         critic_network_gradient = tape.gradient(critic_loss,

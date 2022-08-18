@@ -6,7 +6,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 pcAgent = agent(5)
-nGames = 700
+nGames = 100
 env = pendulumCart()
 scoreHistory = []
 
@@ -74,5 +74,5 @@ def testModel():
     axs[2].plot(time,force)
     plt.show()
 
-testModel()
+# testModel()
 print("Done")
