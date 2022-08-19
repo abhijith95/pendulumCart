@@ -20,7 +20,7 @@ class agent:
     """
     def __init__(self,inputDims,alpha = 0.001,beta = 0.002,
                  gamma = 0.99,nactions = 1, maxMemorySize = 10**6,
-                 tau = 0.005,fc1 = 128, fc2 = 200,batchSize = 128, noise = 0.1,
+                 tau = 0.005,fc1 = 400, fc2 = 300,batchSize = 128, noise = 0.1,
                  actionBound = 20):
         """_summary_
 
@@ -45,10 +45,10 @@ class agent:
         self.env = pendulumCart()
         self.actionBound = actionBound
         
-        self.actor = actorNetwork(nactions,r'C:\Users\abhij\pendulumCart\NN_weights')
+        self.actor = actorNetwork(nactions=nactions,directory=r'C:\Users\abhij\pendulumCart\NN_weights',actionBounds=self.actionBound)
         self.critic = criticNetwork(r'C:\Users\abhij\pendulumCart\NN_weights')
-        self.targetActor = actorNetwork(nactions,r'C:\Users\abhij\pendulumCart\NN_weights',
-                                        name = 'target-actor')
+        self.targetActor = actorNetwork(nactions=nactions,directory=r'C:\Users\abhij\pendulumCart\NN_weights',
+                                        name = 'target-actor',actionBounds=self.actionBound)
         self.targetCritic = criticNetwork(r'C:\Users\abhij\pendulumCart\NN_weights',
                                           name = 'target-critic')
         
@@ -118,7 +118,7 @@ class agent:
             critic_value_ = tf.squeeze(self.targetCritic(
                                 states_, target_actions), 1)
             critic_value = tf.squeeze(self.critic(states, actions), 1)
-            target = rewards + self.gamma*critic_value_*(1-done)
+            target = rewards + self.gamma*critic_value_*(done)
             critic_loss = keras.losses.MSE(target, critic_value)
 
         critic_network_gradient = tape.gradient(critic_loss,

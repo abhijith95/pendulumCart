@@ -79,6 +79,7 @@ class pendulumCart:
                              t_span =[currentTime,currentTime+self.timeStep],t_eval = [currentTime+self.timeStep],
                              y0=y0,args=[systemInput])
         self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity = float(solution.y[0]),float(solution.y[1]),float(solution.y[2]),float(solution.y[3])
+        self.pendulumPosition = self.pendulumPosition % (2*math.pi)
     
     def getReward(self,systemInput):
         """
@@ -88,7 +89,7 @@ class pendulumCart:
         This function returns reward for the current state of the system
         The parameters are taken from the paper: https://www.mdpi.com/2076-3417/10/24/9013
         """    
-        ar,br,cr,dr,er,n = (10**-2),(0.1),(1),(-0.01),(-100),2
+        ar,br,cr,dr,er,n = (10**-2),(0.1),(0),(-0.01),(-100),2
         r1 = dr*(br*(abs(self.pendulumPosition*180/math.pi)**n)+cr*(abs(systemInput)**n))
         if abs(self.cartPosition) < self.maxTrackLength:
             reward = r1
