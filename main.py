@@ -6,8 +6,8 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 FREQ = 1/0.02
-pcAgent = agent(5)
-nGames = 650
+pcAgent = agent(inputDims = 5, actionBound=50)
+nGames = 1000
 episodeTime = 25 # in sec
 env = pendulumCart(timeStep=1/FREQ)
 scoreHistory = []
@@ -61,7 +61,7 @@ def testModel():
     simulationTime = 0
     envTest = pendulumCart(initialStateVector=[0,0,math.pi,0])
     time,pendulumAngle,cartPos,force = [0],[180],[0],[0]
-    while simulationTime < episodeTime:
+    while simulationTime < 3*episodeTime:
         state = envTest.getState()
         state = tf.convert_to_tensor([state], dtype=tf.float32)
         action = bestModel(state)

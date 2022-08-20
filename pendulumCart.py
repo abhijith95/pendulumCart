@@ -86,11 +86,12 @@ class pendulumCart:
         The reward function is setup in such a way that following parameters are penalized:
             1. pendulum position - goal is to get the pendlumum to zero angle
             2. Cart force - not to spend too much effort in moving the cart
+            3. Cart position - so as to keep the cart within the maximum track width
         This function returns reward for the current state of the system
         The parameters are taken from the paper: https://www.mdpi.com/2076-3417/10/24/9013
         """    
-        ar,br,cr,dr,er,n = (10**-2),(0.1),(0),(-0.01),(-100),2
-        r1 = dr*(br*(abs(self.pendulumPosition*180/math.pi)**n)+cr*(abs(systemInput)**n))
+        ar,br,cr,dr,er,n = (0),(0.1),(0),(-0.01),(-100),2
+        r1 = dr*(br*(abs(self.pendulumPosition*180/math.pi)**n)+cr*(abs(systemInput)**n) + ar*(abs(self.cartPosition)**n))
         if abs(self.cartPosition) < self.maxTrackLength:
             reward = r1
         else:
