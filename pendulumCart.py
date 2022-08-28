@@ -73,13 +73,16 @@ class pendulumCart:
         dydt = [x1dot,x2dot,x3dot,x4dot]
         return dydt
     
-    def systemSolver(self,currentTime,systemInput):
+    def systemSolver(self,currentTime,systemInput,evaluate=False):
         y0 = [self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity]
         solution = solve_ivp(fun = self.systemEquation,
                              t_span =[currentTime,currentTime+self.timeStep],t_eval = [currentTime+self.timeStep],
                              y0=y0,args=[systemInput])
         self.cartPosition,self.cartVelocity,self.pendulumPosition,self.pendulumVelocity = float(solution.y[0]),float(solution.y[1]),float(solution.y[2]),float(solution.y[3])
-        self.pendulumPosition = self.pendulumPosition % (2*math.pi)
+        if not evaluate:
+            self.pendulumPosition = self.pendulumPosition % (2*math.pi)
+        else:
+            self.pendulumPosition =( abs(self.pendulumPosition) % (2*math.pi))*np.sign(self.pendulumPosition)
     
     def getReward(self,systemInput):
         """

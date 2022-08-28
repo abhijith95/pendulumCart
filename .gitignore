@@ -10,3 +10,7 @@ __pycache__/memoryBuffer.cpython-310.pyc
 __pycache__/networks.cpython-310.pyc
 __pycache__/pendulumCart.cpython-38.pyc
 __pycache__/OUActionNoise.cpython-310.pyc
+NN_weights/bestActor/keras_metadata.pb
+NN_weights/bestActor/saved_model.pb
+NN_weights/bestActor/variables/variables.data-00000-of-00001
+NN_weights/bestActor/variables/variables.index

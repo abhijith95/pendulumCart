@@ -26,7 +26,7 @@ for i in range(nGames):
         action = pcAgent.takeAction(state)
         # solve the ODE to move the system to next state
         # action = float(action)*env.maxForce
-        env.systemSolver(simulationTime,float(action))
+        env.systemSolver(simulationTime,float(action),True)
         simulationTime+=(1/FREQ)
         newState = env.getState()
         reward = env.getReward(action)
@@ -42,46 +42,50 @@ for i in range(nGames):
         bestScore = score
         pcAgent.saveModels()
         bestModel = pcAgent.actor
+        bestModel.save(r'C:\Users\abhij\Desktop\my_model')
 
 fig,axs = plt.subplots(3,1,sharex=True)  
 axs[0].plot(range(nGames),startAngle)
 axs[1].plot(range(nGames),endAngle)
 axs[2].plot(range(nGames),scoreHistory)
 plt.show()
-def testModel():
+#%%
+def testModel(initAngle):
     fig,axs = plt.subplots(3,1,sharex=True)
     axs[0].set_title("Pendulum position vs time")
+    axs[0].set_ylim([-180,180])
     axs[1].set_title("Cart position vs time")
     axs[2].set_title("Force vs time")
     axs[2].set_xlabel("Time")
     axs[0].set_ylabel("Angular position (deg)")
     axs[1].set_ylabel("Cart position (m)")
-    axs[2].set_ylabel("Force(N)")
+    axs[2].set_ylabel("Velocity(m/s)")
     
     simulationTime = 0
-    envTest = pendulumCart(initialStateVector=[0,0,math.pi,0])
-    time,pendulumAngle,cartPos,force = [0],[180],[0],[0]
-    while simulationTime < 3*episodeTime:
+    envTest = pendulumCart(initialStateVector=[0,0,initAngle*math.pi/180,0],
+                           timeStep=1/FREQ)
+    time,pendulumAngle,cartPos,force = [0],[initAngle],[0],[0]
+    while simulationTime < episodeTime:
         state = envTest.getState()
         state = tf.convert_to_tensor([state], dtype=tf.float32)
         action = bestModel(state)
         cartForce = float(action[0])
-        envTest.systemSolver(simulationTime,action)
+        envTest.systemSolver(simulationTime,action,True)
         simulationTime+=(1/FREQ)
         temp = math.degrees(envTest.pendulumPosition)
-        if temp < 0:
-            temp+=360
-        if 359 < temp < 361:
-            temp = 0
+        # if temp < 0:
+        #     temp+=360
+        # if 359 < temp < 361:
+        #     temp = 0
         time.append(simulationTime)
         pendulumAngle.append(temp)
         cartPos.append(envTest.cartPosition)
-        force.append(cartForce)
+        force.append(envTest.cartVelocity)
         
     axs[0].plot(time,pendulumAngle)
     axs[1].plot(time,cartPos)
     axs[2].plot(time,force)
     plt.show()
 
-testModel()
+testModel(180)
 print("Done")
