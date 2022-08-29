@@ -21,6 +21,7 @@ for i in range(nGames):
     score = 0
     simulationTime = 0
     startAngle.append(math.degrees(env.pendulumPosition))
+    print("Training episode",i+1)
     while not done:
         state = env.getState()
         action = pcAgent.takeAction(state)
@@ -42,7 +43,7 @@ for i in range(nGames):
         bestScore = score
         pcAgent.saveModels()
         bestModel = pcAgent.actor
-        bestModel.save(r'C:\Users\abhij\Desktop\my_model')
+        bestModel.save(r'C:\Users\abhij\pendulumCart\NN_weights\bestActor')
 
 fig,axs = plt.subplots(3,1,sharex=True)  
 axs[0].plot(range(nGames),startAngle)
@@ -87,5 +88,5 @@ def testModel(initAngle):
     axs[2].plot(time,force)
     plt.show()
 
-testModel(180)
+testModel(200)
 print("Done")

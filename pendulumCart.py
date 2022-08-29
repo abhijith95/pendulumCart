@@ -93,8 +93,8 @@ class pendulumCart:
         This function returns reward for the current state of the system
         The parameters are taken from the paper: https://www.mdpi.com/2076-3417/10/24/9013
         """    
-        ar,br,cr,dr,er,n = (0),(0.1),(0),(-0.01),(-100),2
-        r1 = dr*(br*(abs(self.pendulumPosition*180/math.pi)**n)+cr*(abs(systemInput)**n) + ar*(abs(self.cartPosition)**n))
+        ar,br,cr,dr,er,n = (0.01),(0.1),(0),(-1),(-100),2
+        r1 = dr*(br*(abs(self.pendulumPosition)**n)+cr*(abs(systemInput)**n) + ar*(abs(self.cartPosition)**n))
         if abs(self.cartPosition) < self.maxTrackLength:
             reward = r1
         else:
